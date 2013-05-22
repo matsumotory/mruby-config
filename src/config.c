@@ -9,7 +9,7 @@
 #include "mruby/data.h"
 
 #define GLOBAL_CONFIG_KEY    "$mrb_g_config"
-#define INSTANCE_CONFIG_KEY  "$mrb_i_config"
+#define INSTANCE_CONFIG_KEY  "@mrb_i_config"
 
 // get config func for C
 
