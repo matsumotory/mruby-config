@@ -61,7 +61,17 @@ new_config(
     ```
 
 ### Other mruby-config method
- - To work on Ruby side with these values you can, add a new configuration value
+ - To work on Ruby side with these values you can, create a new configuration value
+```ruby
+new_config(
+    "Listen"            => 80,
+    "DocumentRoot"      => "/var/www/html",
+    "User"              => "apache",
+    "Group"             => "apache",
+)
+```
+
+ - add or modify a new configuration value
 ```ruby
 add_config "ExtendedStatus" => "On"
 ```
