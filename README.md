@@ -1,6 +1,4 @@
 # Config Module for mruby
-mruby config module
-
 With mruby we continuously switching between Ruby and C code. mruby-config gives you an easy way to maintain configuration values on both sides.
 
 refs: http://blog.mruby.sh/201305220423.html
@@ -16,9 +14,8 @@ MRuby::Build.new do |conf|
 end
 ```
 
-## example
-### An example Ruby configuration ```mruby.conf```
-
+## How to use
+ - An example Ruby configuration ```mruby.conf```
 ```ruby
 new_config(
     "Listen"            => 80,
@@ -30,8 +27,7 @@ new_config(
 ```
 
 
-### The corresponding C code to read the configuration values in C
-
+ - The corresponding C code to read the configuration values in C
 ```c
 #include <mruby.h>
 
@@ -64,26 +60,21 @@ int main() {
 ```
 
 ### Other mruby-config method
-- To work on Ruby side with these values you can, add a new configuration value
-
+ - To work on Ruby side with these values you can, add a new configuration value
 ```ruby
 add_config "ExtendedStatus" => "On"
 ```
 
-- Delete configuration values
-
+ - Delete configuration values
 ```ruby
 del_config "ExtendedStatus"
 ```
 
-- Read out a configuration values
-
+ - Read out a configuration values
 ```ruby
 get_config "ExtendedStatus"
 ```
-
 or get all configureation values
-
 ```ruby
 get_config
 ```
