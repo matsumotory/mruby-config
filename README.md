@@ -16,6 +16,7 @@ end
 
 ## How to use
  - An example Ruby configuration ```mruby.conf```
+ 
 ```ruby
 new_config(
     "Listen"            => 80,
