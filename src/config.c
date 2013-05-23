@@ -60,7 +60,7 @@ static mrb_value mrb_config_del(mrb_state *mrb, mrb_value self)
 
   mrb_get_args(mrb, "o", &key);
   config = mrb_gv_get(mrb, mrb_intern(mrb, GLOBAL_CONFIG_KEY));
-  mrb_funcall(mrb, config, "delete", 1, key);
+  mrb_hash_delete_key(mrb, config, key);
   mrb_gv_set(mrb, mrb_intern(mrb, GLOBAL_CONFIG_KEY), config);
 
   return config;
@@ -68,7 +68,7 @@ static mrb_value mrb_config_del(mrb_state *mrb, mrb_value self)
 
 /*
 ** Kernel#{new,add,get,del}_sub_config
-** NOT IMPLEMTED > del_sub_config
+** Config::Sub#{add,get,del}
 */
 
 static mrb_value mrb_config_sub_create(mrb_state *mrb, mrb_value self)
@@ -116,6 +116,23 @@ static mrb_value mrb_config_sub_get(mrb_state *mrb, mrb_value self)
   }
 }
 
+static mrb_value mrb_config_sub_del(mrb_state *mrb, mrb_value self)
+{
+  int argc;
+  mrb_value tag, key, config;
+
+  config = mrb_gv_get(mrb, mrb_intern(mrb, GLOBAL_SUB_CONFIG_KEY));
+  argc = mrb_get_args(mrb, "o|oo", &tag, &key); 
+  if (argc == 1) {
+    mrb_hash_delete_key(mrb, config, tag);
+  } else if (argc == 2) {
+    mrb_hash_delete_key(mrb, mrb_hash_get(mrb, config, tag), key);
+  } 
+  mrb_gv_set(mrb, mrb_intern(mrb, GLOBAL_SUB_CONFIG_KEY), config);
+
+  return config;
+}
+
 void mrb_mruby_config_gem_init(mrb_state *mrb)
 {
   struct RClass *config;
@@ -127,6 +144,7 @@ void mrb_mruby_config_gem_init(mrb_state *mrb)
   mrb_define_method(mrb, mrb->kernel_module, "get_config",     mrb_config_get,        MRB_ARGS_OPT(1));
   mrb_define_method(mrb, mrb->kernel_module, "new_sub_config", mrb_config_sub_create, MRB_ARGS_REQ(2));
   mrb_define_method(mrb, mrb->kernel_module, "add_sub_config", mrb_config_sub_add,    MRB_ARGS_REQ(2));
+  mrb_define_method(mrb, mrb->kernel_module, "del_sub_config", mrb_config_sub_del,    MRB_ARGS_OPT(2));
   mrb_define_method(mrb, mrb->kernel_module, "get_sub_config", mrb_config_sub_get,    MRB_ARGS_OPT(2));
 
   config = mrb_define_class(mrb, "Config", mrb->object_class);
@@ -136,7 +154,7 @@ void mrb_mruby_config_gem_init(mrb_state *mrb)
 
   sub_config = mrb_define_class_under(mrb, config, "Sub", mrb->object_class);
   mrb_define_class_method(mrb, sub_config, "add", mrb_config_sub_add, MRB_ARGS_REQ(2));
-  //mrb_define_class_method(mrb, sub_config, "del", mrb_config_sub_del, MRB_ARGS_REQ(2));
+  mrb_define_class_method(mrb, sub_config, "del", mrb_config_sub_del, MRB_ARGS_REQ(2));
   mrb_define_class_method(mrb, sub_config, "get", mrb_config_sub_get, MRB_ARGS_OPT(2));
 }
 
