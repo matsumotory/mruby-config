@@ -63,6 +63,11 @@ static mrb_value mrb_config_del(mrb_state *mrb, mrb_value self)
   return config;
 }
 
+/*
+** Kernel#sub_{new,add,get,del}_config
+** NOT IMPLEMTED > sub_del_config
+*/
+
 static mrb_value mrb_config_sub_create(mrb_state *mrb, mrb_value self)
 {
   mrb_value config, tag, setting;
