@@ -24,6 +24,16 @@ new_config(
     "User"              => "apache",
     "Group"             => "apache",
 )
+
+sub_new_config tag1, {
+    "Files"         => "index.cgi",
+    "AccessLimit"   => "5"
+}
+
+sub_add_config tag2, {
+    "Files"       => "mt.cgi",
+    "AccessLimit" => "1"
+}
 ```
 
 
@@ -35,6 +45,11 @@ new_config(
     static mrb_value get_config_value(mrb_state *mrb, char *key)
     {
       return mrb_funcall(mrb, mrb_top_self(mrb), "get_config", 1, mrb_str_new_cstr(mrb, key));
+    }
+    
+    static mrb_value get_sub_config_value(mrb_state *mrb, char *tag, char *key)
+    {
+      return mrb_funcall(mrb, mrb_top_self(mrb), "sub_get_config", 2, mrb_str_new_cstr(mrb, tag)), mrb_str_new_cstr(mrb, key));
     }
     
     int main() {
@@ -51,6 +66,9 @@ new_config(
       mrb_value extend_status   = get_config_value(mrb, "ExtendedStatus");
       mrb_value user            = get_config_value(mrb, "User");
       mrb_value group           = get_config_value(mrb, "Group");
+      
+      mrb_value tag1_limit      = get_sub_config_value(mrb, "tag1", "AccessLimit");
+      mrb_value tag2_limit      = get_sub_config_value(mrb, "tag2", "AccessLimit");
     
       // implement any function here
     
