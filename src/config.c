@@ -64,8 +64,8 @@ static mrb_value mrb_config_del(mrb_state *mrb, mrb_value self)
 }
 
 /*
-** Kernel#sub_{new,add,get,del}_config
-** NOT IMPLEMTED > sub_del_config
+** Kernel#{new,add,get,del}_sub_config
+** NOT IMPLEMTED > del_sub_config
 */
 
 static mrb_value mrb_config_sub_create(mrb_state *mrb, mrb_value self)
@@ -118,9 +118,9 @@ void mrb_mruby_config_gem_init(mrb_state *mrb)
   mrb_define_method(mrb, mrb->kernel_module, "add_config",     mrb_config_add,        MRB_ARGS_REQ(1));
   mrb_define_method(mrb, mrb->kernel_module, "del_config",     mrb_config_del,        MRB_ARGS_REQ(1));
   mrb_define_method(mrb, mrb->kernel_module, "get_config",     mrb_config_get,        MRB_ARGS_OPT(1));
-  mrb_define_method(mrb, mrb->kernel_module, "sub_new_config", mrb_config_sub_create, MRB_ARGS_REQ(2));
-  mrb_define_method(mrb, mrb->kernel_module, "sub_add_config", mrb_config_sub_add,    MRB_ARGS_REQ(2));
-  mrb_define_method(mrb, mrb->kernel_module, "sub_get_config", mrb_config_sub_get,    MRB_ARGS_OPT(2));
+  mrb_define_method(mrb, mrb->kernel_module, "new_sub_config", mrb_config_sub_create, MRB_ARGS_REQ(2));
+  mrb_define_method(mrb, mrb->kernel_module, "add_sub_config", mrb_config_sub_add,    MRB_ARGS_REQ(2));
+  mrb_define_method(mrb, mrb->kernel_module, "get_sub_config", mrb_config_sub_get,    MRB_ARGS_OPT(2));
 
   config = mrb_define_class(mrb, "Config", mrb->object_class);
   mrb_define_class_method(mrb, config, "add", mrb_config_add, MRB_ARGS_REQ(1));
