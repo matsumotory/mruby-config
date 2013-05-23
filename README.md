@@ -28,12 +28,12 @@ end
     
     sub_new_config tag1, {
         "Files"         => "index.cgi",
-        "AccessLimit"   => "5"
+        "AccessLimit"   => 5
     }
     
     sub_add_config tag2, {
         "Files"       => "mt.cgi",
-        "AccessLimit" => "1"
+        "AccessLimit" => 1
     }
     ```
 
