@@ -16,26 +16,26 @@ end
 
 ## How to use
  - An example Ruby configuration ```mruby.conf```
- 
-```ruby
-new_config(
-    "Listen"            => 80,
-    "DocumentRoot"      => "/var/www/html",
-    "ExtendedStatus"    => "On",
-    "User"              => "apache",
-    "Group"             => "apache",
-)
 
-sub_new_config tag1, {
-    "Files"         => "index.cgi",
-    "AccessLimit"   => "5"
-}
-
-sub_add_config tag2, {
-    "Files"       => "mt.cgi",
-    "AccessLimit" => "1"
-}
-```
+    ```ruby
+    new_config(
+        "Listen"            => 80,
+        "DocumentRoot"      => "/var/www/html",
+        "ExtendedStatus"    => "On",
+        "User"              => "apache",
+        "Group"             => "apache",
+    )
+    
+    sub_new_config tag1, {
+        "Files"         => "index.cgi",
+        "AccessLimit"   => "5"
+    }
+    
+    sub_add_config tag2, {
+        "Files"       => "mt.cgi",
+        "AccessLimit" => "1"
+    }
+    ```
 
 
  - The corresponding C code to read the configuration values in C
@@ -107,6 +107,37 @@ get_config "ExtendedStatus"
 or get all configureation values
 ```ruby
 get_config
+```
+
+ - To work on Ruby side with these values you can, create a new sub configuration value
+```ruby
+new_sub_config tag1, {
+    "Files"       => "mt.cgi",
+    "AccessLimit" => 1
+}
+add_sub_config tag2, {
+    "Files"       => "index.cgi",
+    "AccessLimit" => 5
+}
+```
+
+ - add or modify a new sub configuration value
+```ruby
+add_sub_config "tag1", "Directory" => "/var/www/"
+```
+
+ - Delete sub configuration values (NOT IMPLEMTED)
+```ruby
+del_sub_config "hoge"
+```
+
+ - Read out a sub configuration values
+```ruby
+get_sub_config "tag1", "AccessLimit"
+```
+or get sub all configureation values
+```ruby
+get_config "tag2"
 ```
 
 # License
