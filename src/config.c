@@ -45,6 +45,9 @@ static mrb_value mrb_config_add(mrb_state *mrb, mrb_value self)
 
   mrb_get_args(mrb, "o", &setting);
   config = mrb_gv_get(mrb, mrb_intern(mrb, GLOBAL_CONFIG_KEY));
+  if (mrb_nil_p(config)) {
+    config = mrb_hash_new(mrb);  
+  }
   config = mrb_funcall(mrb, config, "merge", 1, setting);
   mrb_gv_set(mrb, mrb_intern(mrb, GLOBAL_CONFIG_KEY), config);
 
@@ -88,6 +91,9 @@ static mrb_value mrb_config_sub_add(mrb_state *mrb, mrb_value self)
   add_config = mrb_hash_new(mrb);
   mrb_hash_set(mrb, add_config, tag, setting);
   config = mrb_gv_get(mrb, mrb_intern(mrb, GLOBAL_SUB_CONFIG_KEY));
+  if (mrb_nil_p(config)) {
+    config = mrb_hash_new(mrb);  
+  }
   config = mrb_funcall(mrb, config, "merge", 1, add_config);
   mrb_gv_set(mrb, mrb_intern(mrb, GLOBAL_SUB_CONFIG_KEY), config);
 
