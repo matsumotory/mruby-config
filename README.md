@@ -3,6 +3,11 @@ With mruby we continuously switching between Ruby and C code. mruby-config gives
 
 refs: http://blog.mruby.sh/201305220423.html
 
+ - Kernel#{get,del,add,new}_config
+ - Config#{get,del,add}
+ - Kernel#{get,del,add,new}_sub_config
+ - Config::Sub#{get,del,add}
+
 ## install by mrbgems
  - add conf.gem line to `build_config.rb`
 ```ruby
@@ -94,16 +99,29 @@ new_config(
 ```ruby
 add_config "ExtendedStatus" => "On"
 ```
+or
+```ruby
+Config::add "ExtendedStatus" => "On"
+```
 
  - Delete configuration values
 ```ruby
 del_config "ExtendedStatus"
+```
+or
+```ruby
+Config::del "ExtendedStatus"
 ```
 
  - Read out a configuration values
 ```ruby
 get_config "ExtendedStatus"
 ```
+or
+```ruby
+Config::get "ExtendedStatus"
+```
+
 or get all configureation values
 ```ruby
 get_config
@@ -125,15 +143,27 @@ add_sub_config tag2, {
 ```ruby
 add_sub_config "tag1", "Directory" => "/var/www/"
 ```
+or
+```ruby
+Config::Sub::add "tag1", "Directory" => "/var/www/"
+```
 
  - Delete sub configuration values (NOT IMPLEMTED)
 ```ruby
 del_sub_config "hoge"
 ```
+or
+```ruby
+Config::Sub::del "hoge"
+```
 
  - Read out a sub configuration values
 ```ruby
 get_sub_config "tag1", "AccessLimit"
+```
+or
+```ruby
+Config::Sub::get "tag1", "AccessLimit"
 ```
 or get sub all configureation values
 ```ruby
