@@ -1,3 +1,8 @@
+/*
+**
+** gcc mconfig.c -I ../../mruby/include/ ../../mruby/build/host/lib/libmruby.a
+**
+*/
 #include <stdio.h>
 #include <mruby.h>
 #include <mruby/variable.h>
@@ -47,9 +52,9 @@ int main() {
   mrb_p(mrb, tag2_file);
   mrb_p(mrb, tag2_limit);
 
-  mrb_close(mrb);
-
   // Implement code using configuration value in Ruby
+
+  mrb_close(mrb);
 
   return 0;
 }
