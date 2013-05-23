@@ -121,7 +121,6 @@ or
 ```ruby
 Config::get "ExtendedStatus"
 ```
-
 or get all configureation values
 ```ruby
 get_config
