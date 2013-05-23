@@ -137,7 +137,7 @@ get_sub_config "tag1", "AccessLimit"
 ```
 or get sub all configureation values
 ```ruby
-get_config "tag2"
+get_sub_config "tag2"
 ```
 
 # License
