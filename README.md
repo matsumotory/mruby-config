@@ -46,17 +46,15 @@ end
  - The corresponding C code to read the configuration values in C
 
     ```c
-    #include <mruby.h>
-    
-    static mrb_value get_config_value(mrb_state *mrb, char *key)
-    {
-      return mrb_funcall(mrb, mrb_top_self(mrb), "get_config", 1, mrb_str_new_cstr(mrb, key));
-    }
-    
-    static mrb_value get_sub_config_value(mrb_state *mrb, char *tag, char *key)
-    {
-      return mrb_funcall(mrb, mrb_top_self(mrb), "sub_get_config", 2, mrb_str_new_cstr(mrb, tag)), mrb_str_new_cstr(mrb, key));
-    }
+    /*
+    **
+    ** gcc mconfig.c -I ../../mruby/include/ ../../mruby/build/host/lib/libmruby.a
+    **
+    */
+    #include <stdio.h>
+    #include "mruby.h"
+    #include "mruby/variable.h"
+    #include "mruby/hash.h"
     
     int main() {
     
@@ -64,19 +62,52 @@ end
       if ((fp = fopen("./mruby.conf", "r")) == NULL)
         return 1;
     
+      int port;
+      char *droot;
+      mrb_value user;
+    
+      char *tag1_file;
+      mrb_value tag1_limit; 
+      int tag2_limit; 
+    
       mrb_state* mrb = mrb_open();
       mrb_load_file(mrb, fp);
     
-      mrb_value listen_port     = get_config_value(mrb, "Listen");
-      mrb_value document_root   = get_config_value(mrb, "DocumentRoot");
-      mrb_value extend_status   = get_config_value(mrb, "ExtendedStatus");
-      mrb_value user            = get_config_value(mrb, "User");
-      mrb_value group           = get_config_value(mrb, "Group");
-      
-      mrb_value tag1_limit      = get_sub_config_value(mrb, "tag1", "AccessLimit");
-      mrb_value tag2_limit      = get_sub_config_value(mrb, "tag2", "AccessLimit");
+      /*
+      mrb_get_config_value(mrb, key, format, ...)
     
-      // implement any function here
+      format specifiers (like mrb_get_args):
+    
+       o: Object [mrb_value]
+       S: String [mrb_value]          //Not Implemented
+       A: Array [mrb_value]           //Not Implemented
+       H: Hash [mrb_value]            //Not Implemented
+       s: String [char*,int]          //Not Implemented
+       z: String [char*]
+       a: Array [mrb_value*,mrb_int]  //Not Implemented
+       f: Float [mrb_float]           //Not Implemented
+       i: Integer [mrb_int]
+      */
+    
+      mrb_get_config_value(mrb, "Listen",       "i", &port);
+      mrb_get_config_value(mrb, "DocumentRoot", "z", &droot);
+      mrb_get_config_value(mrb, "User",         "o", &user);
+    
+      mrb_get_sub_config_value(mrb, "tag1", "Files",        "z", &tag1_file);
+      mrb_get_sub_config_value(mrb, "tag1", "AccessLimit",  "o", &tag1_limit);
+      mrb_get_sub_config_value(mrb, "tag2", "AccessLimit",  "i", &tag2_limit);
+    
+      printf("=== global configuration ===\n");
+      printf("port=%d droot=%s\n", port, droot);
+      mrb_p(mrb, user);
+      printf("\n");
+    
+      printf("=== tag configuration ===\n");
+      printf("tag1_file=%s\n", tag1_file);
+      mrb_p(mrb, tag1_limit);
+      printf("tag2_limit=%d\n", tag2_limit);
+    
+      // Implement code using configuration value in Ruby
     
       mrb_close(mrb);
     
