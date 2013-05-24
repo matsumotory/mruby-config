@@ -4,10 +4,14 @@
 ** See Copyright Notice in mruby.h
 */
 
+#include <stdarg.h>
+#include <string.h>
+
 #include "mruby.h"
 #include "mruby/variable.h"
 #include "mruby/data.h"
 #include "mruby/hash.h"
+#include "mruby/string.h"
 
 #define GLOBAL_CONFIG_KEY       "$mrb_g_config"
 #define GLOBAL_SUB_CONFIG_KEY   "$mrb_g_sub_config"
@@ -131,6 +135,163 @@ static mrb_value mrb_config_sub_del(mrb_state *mrb, mrb_value self)
   mrb_gv_set(mrb, mrb_intern(mrb, GLOBAL_SUB_CONFIG_KEY), config);
 
   return config;
+}
+
+//
+// C functions for mruby-config
+//
+
+  /*
+  mrb_get_config_value(mrb, key, format, ...)
+  mrb_get_sub_config_value(mrb, tag, key, format, ...)
+
+  format specifiers (like mrb_get_args):
+
+   o: Object [mrb_value]
+   S: String [mrb_value]          //Not Implemented
+   A: Array [mrb_value]           //Not Implemented
+   H: Hash [mrb_value]            //Not Implemented
+   s: String [char*,int]          //Not Implemented
+   z: String [char*]
+   a: Array [mrb_value*,mrb_int]  //Not Implemented
+   f: Float [mrb_float]           //Not Implemented
+   i: Integer [mrb_int]
+  */
+
+void mrb_get_config_value(mrb_state *mrb, char *key, const char *format, ...)
+{
+  mrb_value val;
+  const char *p;
+  va_list args;
+
+  va_start(args, format);
+  p = format;
+  val = mrb_funcall(mrb, mrb_top_self(mrb), "get_config", 1, mrb_str_new_cstr(mrb, key));
+
+  switch (*p) {
+  case 'o':
+    {
+      mrb_value *o;
+
+      o = va_arg(args, mrb_value*);
+      *o = val;
+    }
+    break;
+  case 'i':
+    {
+      int *i;
+      mrb_value tmp;
+
+      i = va_arg(args, int*);
+      tmp = mrb_convert_type(mrb, val, MRB_TT_FIXNUM, "Integer", "to_int");
+      *i = mrb_fixnum(tmp);
+    }
+    break;
+  case 'z':
+    {
+      char **z;
+      struct RString *s;
+
+      z = va_arg(args, char**);
+      s = mrb_str_ptr(val);
+      if (strlen(s->ptr) != s->len) {
+        mrb_raise(mrb, E_ARGUMENT_ERROR, "String contains NUL");
+      }
+      *z = s->ptr;
+    }
+    break;
+  }
+  va_end( args );
+}
+
+void mrb_get_sub_config_value(mrb_state *mrb, char *tag, char *key, const char *format, ...)
+{
+  mrb_value val;
+  const char *p;
+  va_list args;
+
+  va_start(args, format);
+  p = format;
+  val = mrb_funcall(mrb, mrb_top_self(mrb), "get_sub_config", 2, mrb_str_new_cstr(mrb, tag), mrb_str_new_cstr(mrb, key));
+
+  switch (*p) {
+  case 'o':
+    {
+      mrb_value *o;
+
+      o = va_arg(args, mrb_value*);
+      *o = val;
+    }
+    break;
+  case 'i':
+    {
+      int *i;
+      mrb_value tmp;
+
+      i = va_arg(args, int*);
+      tmp = mrb_convert_type(mrb, val, MRB_TT_FIXNUM, "Integer", "to_int");
+      *i = mrb_fixnum(tmp);
+    }
+    break;
+  case 'z':
+    {
+      char **z;
+      struct RString *s;
+
+      z = va_arg(args, char**);
+      s = mrb_str_ptr(val);
+      if (strlen(s->ptr) != s->len) {
+        mrb_raise(mrb, E_ARGUMENT_ERROR, "String contains NUL");
+      }
+      *z = s->ptr;
+    }
+    break;
+  }
+  va_end( args );
+}
+
+void mrb_config_convert_value(mrb_state *mrb, mrb_value val, const char *format, ...)
+{
+  const char *p;
+  va_list args;
+
+  va_start(args, format);
+  p = format;
+
+  switch (*p) {
+  case 'o':
+    {
+      mrb_value *o;
+
+      o = va_arg(args, mrb_value*);
+      *o = val;
+    }
+    break;
+  case 'i':
+    {
+      int *i;
+      mrb_value tmp;
+
+      i = va_arg(args, int*);
+      tmp = mrb_convert_type(mrb, val, MRB_TT_FIXNUM, "Integer", "to_int");
+      *i = mrb_fixnum(tmp);
+    }
+    break;
+  case 'z':
+    {
+      char **z;
+      struct RString *s;
+
+      z = va_arg(args, char**);
+      s = mrb_str_ptr(val);
+      if (strlen(s->ptr) != s->len) {
+        mrb_raise(mrb, E_ARGUMENT_ERROR, "String contains NUL");
+      }
+      *z = s->ptr;
+    }
+    break;
+  }
+  va_end( args );
 }
 
 void mrb_mruby_config_gem_init(mrb_state *mrb)
