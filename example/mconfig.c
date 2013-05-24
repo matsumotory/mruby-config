@@ -27,6 +27,8 @@ int main() {
 
   /*
   mrb_get_config_value(mrb, key, format, ...)
+  mrb_get_sub_config_value(mrb, tag, key, format, ...)
+  mrb_config_convert_value(mrb, val, format, ...)
 
   format specifiers (like mrb_get_args):
 
