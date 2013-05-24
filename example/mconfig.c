@@ -41,13 +41,17 @@ int main() {
    i: Integer [mrb_int]
   */
 
+  // get a global configuration value by C data type
   mrb_get_config_value(mrb, "Listen",       "i", &port);
   mrb_get_config_value(mrb, "DocumentRoot", "z", &droot);
   mrb_get_config_value(mrb, "User",         "o", &user);
 
+  // get a tag configuration value by C data type
   mrb_get_sub_config_value(mrb, "tag1", "Files",        "z", &tag1_file);
   mrb_get_sub_config_value(mrb, "tag1", "AccessLimit",  "o", &tag1_limit);
   mrb_get_sub_config_value(mrb, "tag2", "AccessLimit",  "i", &tag2_limit);
+
+  // Implement code using configuration value in Ruby
 
   printf("=== global configuration ===\n");
   printf("port=%d droot=%s\n", port, droot);
@@ -59,7 +63,10 @@ int main() {
   mrb_p(mrb, tag1_limit);
   printf("tag2_limit=%d\n", tag2_limit);
 
-  // Implement code using configuration value in Ruby
+  // convert mrb_value to any C data type vale
+  int tag1_limit_c;
+  mrb_config_convert_value(mrb, tag1_limit, "i", &tag1_limit_c);
+  printf("tag1_limit=%d\n", tag1_limit_c);
 
   mrb_close(mrb);
 
