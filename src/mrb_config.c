@@ -312,6 +312,38 @@ void mrb_config_convert_value(mrb_state *mrb, mrb_value val, const char *format,
   va_end( args );
 }
 
+void mrb_config_new_config_str(mrb_state *mrb, char *key, char *val)
+{
+  mrb_value conf;
+  conf = mrb_hash_new(mrb);
+  mrb_hash_set(mrb, conf, mrb_str_new_cstr(mrb, key), mrb_str_new_cstr(mrb, val));
+  mrb_funcall(mrb, mrb_top_self(mrb), "new_config", 1, conf);
+}
+
+void mrb_config_add_config_str(mrb_state *mrb, char *key, char *val)
+{
+  mrb_value conf;
+  conf = mrb_hash_new(mrb);
+  mrb_hash_set(mrb, conf, mrb_str_new_cstr(mrb, key), mrb_str_new_cstr(mrb, val));
+  mrb_funcall(mrb, mrb_top_self(mrb), "add_config", 1, conf);
+}
+
+void mrb_config_add_config_int(mrb_state *mrb, char *key, int val)
+{
+  mrb_value conf;
+  conf = mrb_hash_new(mrb);
+  mrb_hash_set(mrb, conf, mrb_str_new_cstr(mrb, key), mrb_fixnum_value(val));
+  mrb_funcall(mrb, mrb_top_self(mrb), "add_config", 1, conf);
+}
+
+void mrb_config_add_config_boolean(mrb_state *mrb, char *key, int val)
+{
+  mrb_value conf;
+  conf = mrb_hash_new(mrb);
+  mrb_hash_set(mrb, conf, mrb_str_new_cstr(mrb, key), (val) ? mrb_true_value() : mrb_false_value());
+  mrb_funcall(mrb, mrb_top_self(mrb), "add_config", 1, conf);
+}
+
 void mrb_mruby_config_gem_init(mrb_state *mrb)
 {
   struct RClass *config;
