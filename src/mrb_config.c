@@ -157,6 +157,7 @@ static mrb_value mrb_config_sub_del(mrb_state *mrb, mrb_value self)
    a: Array [mrb_value*,mrb_int]  //Not Implemented
    f: Float [mrb_float]           //Not Implemented
    i: Integer [mrb_int]
+   b: boolean [int (0 or 1)]
   */
 
 void mrb_get_config_value(mrb_state *mrb, char *key, const char *format, ...)
@@ -168,6 +169,10 @@ void mrb_get_config_value(mrb_state *mrb, char *key, const char *format, ...)
   va_start(args, format);
   p = format;
   val = mrb_funcall(mrb, mrb_top_self(mrb), "get_config", 1, mrb_str_new_cstr(mrb, key));
+  if (mrb_nil_p(val)) {
+    va_end(args);
+    return;
+  }
 
   switch (*p) {
   case 'o':
@@ -176,6 +181,18 @@ void mrb_get_config_value(mrb_state *mrb, char *key, const char *format, ...)
 
       o = va_arg(args, mrb_value*);
       *o = val;
+    }
+    break;
+  case 'b':
+    {
+      int *b;
+
+      b = va_arg(args, int*);
+      if (mrb_type(val) == MRB_TT_TRUE) {
+        *b = 1;
+      } else if (mrb_type(val) == MRB_TT_FALSE) {
+        *b = 0;
+      }
     }
     break;
   case 'i':
@@ -202,7 +219,7 @@ void mrb_get_config_value(mrb_state *mrb, char *key, const char *format, ...)
     }
     break;
   }
-  va_end( args );
+  va_end(args);
 }
 
 void mrb_get_sub_config_value(mrb_state *mrb, char *tag, char *key, const char *format, ...)
