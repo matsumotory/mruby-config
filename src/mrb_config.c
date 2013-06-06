@@ -336,6 +336,14 @@ void mrb_config_add_config_int(mrb_state *mrb, char *key, int val)
   mrb_funcall(mrb, mrb_top_self(mrb), "add_config", 1, conf);
 }
 
+void mrb_config_add_config_flt(mrb_state *mrb, char *key, float val)
+{
+  mrb_value conf;
+  conf = mrb_hash_new(mrb);
+  mrb_hash_set(mrb, conf, mrb_str_new_cstr(mrb, key), mrb_float_value(mrb, val));
+  mrb_funcall(mrb, mrb_top_self(mrb), "add_config", 1, conf);
+}
+
 void mrb_config_add_config_boolean(mrb_state *mrb, char *key, int val)
 {
   mrb_value conf;
