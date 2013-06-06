@@ -17,6 +17,18 @@
 #define GLOBAL_SUB_CONFIG_KEY   "$mrb_g_sub_config"
 
 #define DONE mrb_gc_arena_restore(mrb, 0);
+#if 1
+#define ARENA_SAVE \
+  int ai = mrb_gc_arena_save(mrb); \
+  if (ai == MRB_ARENA_SIZE) { \
+    mrb_raise(mrb, E_RUNTIME_ERROR, "arena overflow"); \
+  }
+#define ARENA_RESTORE \
+  mrb_gc_arena_restore(mrb, ai);
+#else
+#define ARENA_SAVE
+#define ARENA_RESTORE
+#endif
 
 /*
 ** Kernel#{new_config,get_config,add_config,del_config}
@@ -317,41 +329,51 @@ void mrb_config_convert_value(mrb_state *mrb, mrb_value val, const char *format,
 void mrb_config_new_config_str(mrb_state *mrb, char *key, char *val)
 {
   mrb_value conf;
+  ARENA_SAVE;
   conf = mrb_hash_new(mrb);
   mrb_hash_set(mrb, conf, mrb_str_new_cstr(mrb, key), mrb_str_new_cstr(mrb, val));
   mrb_funcall(mrb, mrb_top_self(mrb), "new_config", 1, conf);
+  ARENA_RESTORE;
 }
 
 void mrb_config_add_config_str(mrb_state *mrb, char *key, char *val)
 {
   mrb_value conf;
+  ARENA_SAVE;
   conf = mrb_hash_new(mrb);
   mrb_hash_set(mrb, conf, mrb_str_new_cstr(mrb, key), mrb_str_new_cstr(mrb, val));
   mrb_funcall(mrb, mrb_top_self(mrb), "add_config", 1, conf);
+  ARENA_RESTORE;
 }
 
 void mrb_config_add_config_int(mrb_state *mrb, char *key, int val)
 {
   mrb_value conf;
+  ARENA_SAVE;
   conf = mrb_hash_new(mrb);
   mrb_hash_set(mrb, conf, mrb_str_new_cstr(mrb, key), mrb_fixnum_value(val));
   mrb_funcall(mrb, mrb_top_self(mrb), "add_config", 1, conf);
+  ARENA_RESTORE;
 }
 
 void mrb_config_add_config_flt(mrb_state *mrb, char *key, mrb_float val)
 {
   mrb_value conf;
+  ARENA_SAVE;
   conf = mrb_hash_new(mrb);
   mrb_hash_set(mrb, conf, mrb_str_new_cstr(mrb, key), mrb_float_value(mrb, val));
   mrb_funcall(mrb, mrb_top_self(mrb), "add_config", 1, conf);
+  ARENA_RESTORE;
 }
 
 void mrb_config_add_config_boolean(mrb_state *mrb, char *key, int val)
 {
   mrb_value conf;
+  ARENA_SAVE;
   conf = mrb_hash_new(mrb);
   mrb_hash_set(mrb, conf, mrb_str_new_cstr(mrb, key), (val) ? mrb_true_value() : mrb_false_value());
   mrb_funcall(mrb, mrb_top_self(mrb), "add_config", 1, conf);
+  ARENA_RESTORE;
 }
 
 void mrb_mruby_config_gem_init(mrb_state *mrb)
