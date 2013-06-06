@@ -336,7 +336,7 @@ void mrb_config_add_config_int(mrb_state *mrb, char *key, int val)
   mrb_funcall(mrb, mrb_top_self(mrb), "add_config", 1, conf);
 }
 
-void mrb_config_add_config_flt(mrb_state *mrb, char *key, float val)
+void mrb_config_add_config_flt(mrb_state *mrb, char *key, mrb_float val)
 {
   mrb_value conf;
   conf = mrb_hash_new(mrb);
