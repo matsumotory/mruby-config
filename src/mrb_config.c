@@ -20,7 +20,7 @@
 #if 1
 #define ARENA_SAVE \
   int ai = mrb_gc_arena_save(mrb); \
-  if (ai == MRB_ARENA_SIZE) { \
+  if (ai == MRB_GC_ARENA_SIZE) { \
     mrb_raise(mrb, E_RUNTIME_ERROR, "arena overflow"); \
   }
 #define ARENA_RESTORE \
@@ -40,7 +40,7 @@ static mrb_value mrb_config_init(mrb_state *mrb, mrb_value self)
   mrb_value config;
 
   mrb_get_args(mrb, "o", &config);
-  mrb_gv_set(mrb, mrb_intern(mrb, GLOBAL_CONFIG_KEY), config);
+  mrb_gv_set(mrb, mrb_intern_cstr(mrb, GLOBAL_CONFIG_KEY), config);
 
   return config;
 }
@@ -49,7 +49,7 @@ static mrb_value mrb_config_get(mrb_state *mrb, mrb_value self)
 {
   mrb_value config, key;
 
-  config = mrb_gv_get(mrb, mrb_intern(mrb, GLOBAL_CONFIG_KEY));
+  config = mrb_gv_get(mrb, mrb_intern_cstr(mrb, GLOBAL_CONFIG_KEY));
   if (mrb_get_args(mrb, "|o", &key) == 1) {
     return mrb_hash_get(mrb, config, key);
   } else {
@@ -62,12 +62,12 @@ static mrb_value mrb_config_add(mrb_state *mrb, mrb_value self)
   mrb_value config, setting;
 
   mrb_get_args(mrb, "o", &setting);
-  config = mrb_gv_get(mrb, mrb_intern(mrb, GLOBAL_CONFIG_KEY));
+  config = mrb_gv_get(mrb, mrb_intern_cstr(mrb, GLOBAL_CONFIG_KEY));
   if (mrb_nil_p(config)) {
     config = mrb_hash_new(mrb);  
   }
   config = mrb_funcall(mrb, config, "merge", 1, setting);
-  mrb_gv_set(mrb, mrb_intern(mrb, GLOBAL_CONFIG_KEY), config);
+  mrb_gv_set(mrb, mrb_intern_cstr(mrb, GLOBAL_CONFIG_KEY), config);
 
   return config;
 }
@@ -77,9 +77,9 @@ static mrb_value mrb_config_del(mrb_state *mrb, mrb_value self)
   mrb_value config, key;
 
   mrb_get_args(mrb, "o", &key);
-  config = mrb_gv_get(mrb, mrb_intern(mrb, GLOBAL_CONFIG_KEY));
+  config = mrb_gv_get(mrb, mrb_intern_cstr(mrb, GLOBAL_CONFIG_KEY));
   mrb_hash_delete_key(mrb, config, key);
-  mrb_gv_set(mrb, mrb_intern(mrb, GLOBAL_CONFIG_KEY), config);
+  mrb_gv_set(mrb, mrb_intern_cstr(mrb, GLOBAL_CONFIG_KEY), config);
 
   return config;
 }
@@ -96,7 +96,7 @@ static mrb_value mrb_config_sub_create(mrb_state *mrb, mrb_value self)
   mrb_get_args(mrb, "oo", &tag, &setting);
   config = mrb_hash_new(mrb);
   mrb_hash_set(mrb, config, tag, setting);
-  mrb_gv_set(mrb, mrb_intern(mrb, GLOBAL_SUB_CONFIG_KEY), config);
+  mrb_gv_set(mrb, mrb_intern_cstr(mrb, GLOBAL_SUB_CONFIG_KEY), config);
 
   return config;
 }
@@ -108,12 +108,12 @@ static mrb_value mrb_config_sub_add(mrb_state *mrb, mrb_value self)
   mrb_get_args(mrb, "oo", &tag, &setting);
   add_config = mrb_hash_new(mrb);
   mrb_hash_set(mrb, add_config, tag, setting);
-  config = mrb_gv_get(mrb, mrb_intern(mrb, GLOBAL_SUB_CONFIG_KEY));
+  config = mrb_gv_get(mrb, mrb_intern_cstr(mrb, GLOBAL_SUB_CONFIG_KEY));
   if (mrb_nil_p(config)) {
     config = mrb_hash_new(mrb);  
   }
   config = mrb_funcall(mrb, config, "merge", 1, add_config);
-  mrb_gv_set(mrb, mrb_intern(mrb, GLOBAL_SUB_CONFIG_KEY), config);
+  mrb_gv_set(mrb, mrb_intern_cstr(mrb, GLOBAL_SUB_CONFIG_KEY), config);
 
   return config;
 }
@@ -123,7 +123,7 @@ static mrb_value mrb_config_sub_get(mrb_state *mrb, mrb_value self)
   int argc;
   mrb_value tag, key, config;
 
-  config = mrb_gv_get(mrb, mrb_intern(mrb, GLOBAL_SUB_CONFIG_KEY));
+  config = mrb_gv_get(mrb, mrb_intern_cstr(mrb, GLOBAL_SUB_CONFIG_KEY));
   argc = mrb_get_args(mrb, "o|oo", &tag, &key); 
   if (argc == 1) {
     return mrb_hash_get(mrb, config, tag);
@@ -139,14 +139,14 @@ static mrb_value mrb_config_sub_del(mrb_state *mrb, mrb_value self)
   int argc;
   mrb_value tag, key, config;
 
-  config = mrb_gv_get(mrb, mrb_intern(mrb, GLOBAL_SUB_CONFIG_KEY));
+  config = mrb_gv_get(mrb, mrb_intern_cstr(mrb, GLOBAL_SUB_CONFIG_KEY));
   argc = mrb_get_args(mrb, "o|oo", &tag, &key); 
   if (argc == 1) {
     mrb_hash_delete_key(mrb, config, tag);
   } else if (argc == 2) {
     mrb_hash_delete_key(mrb, mrb_hash_get(mrb, config, tag), key);
   } 
-  mrb_gv_set(mrb, mrb_intern(mrb, GLOBAL_SUB_CONFIG_KEY), config);
+  mrb_gv_set(mrb, mrb_intern_cstr(mrb, GLOBAL_SUB_CONFIG_KEY), config);
 
   return config;
 }
