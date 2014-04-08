@@ -226,10 +226,10 @@ void mrb_get_config_value(mrb_state *mrb, char *key, const char *format, ...)
 
       z = va_arg(args, char**);
       s = mrb_str_ptr(val);
-      if (strlen(s->ptr) != s->len) {
+      if (strlen(s->as.heap.ptr) != s->as.heap.len) {
         mrb_raise(mrb, E_ARGUMENT_ERROR, "String contains NUL");
       }
-      *z = s->ptr;
+      *z = s->as.heap.ptr;
     }
     break;
   }
@@ -272,10 +272,10 @@ void mrb_get_sub_config_value(mrb_state *mrb, char *tag, char *key, const char *
 
       z = va_arg(args, char**);
       s = mrb_str_ptr(val);
-      if (strlen(s->ptr) != s->len) {
+      if (strlen(s->as.heap.ptr) != s->as.heap.len) {
         mrb_raise(mrb, E_ARGUMENT_ERROR, "String contains NUL");
       }
-      *z = s->ptr;
+      *z = s->as.heap.ptr;
     }
     break;
   }
@@ -316,10 +316,10 @@ void mrb_config_convert_value(mrb_state *mrb, mrb_value val, const char *format,
 
       z = va_arg(args, char**);
       s = mrb_str_ptr(val);
-      if (strlen(s->ptr) != s->len) {
+      if (strlen(s->as.heap.ptr) != s->as.heap.len) {
         mrb_raise(mrb, E_ARGUMENT_ERROR, "String contains NUL");
       }
-      *z = s->ptr;
+      *z = s->as.heap.ptr;
     }
     break;
   }
