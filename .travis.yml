@@ -1,0 +1,18 @@
+language: c
+compiler:
+  - gcc
+  - clang
+before_install:
+  - sudo apt-get -qq update
+install:
+  - sudo apt-get -qq install rake bison git gperf
+before_script:
+  - cd ../
+  - git clone https://github.com/mruby/mruby.git
+  - cd mruby
+  - cp -fp ../mruby-config/.travis_build_config.rb build_config.rb
+script: 
+  - make all test
+notifications:
+  webhooks:
+    - https://idobata.io/hook/f48e8f58-29d9-414e-8336-1fadb62bfa2d
