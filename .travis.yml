@@ -15,4 +15,4 @@ script:
   - make all test
 notifications:
   webhooks:
-    - https://idobata.io/hook/f48e8f58-29d9-414e-8336-1fadb62bfa2d
+    - secure: "h0vHXWjYnNSb/pbi1YNXfgLW0BE7wUv1PYLWi+xD4efyVp6l6DGg+gVibPaJH6goWNO14giDVIxtz2hFenG+wkXLwZZFzUd2bAbjXZUSrVQWjltcj5zhElkelfMi4Rf2Svu8PQ26lvhuAK2/JBmoOWLry9nVmqGBChWl1j91ZnY="
