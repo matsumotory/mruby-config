@@ -64,7 +64,7 @@ static mrb_value mrb_config_add(mrb_state *mrb, mrb_value self)
   mrb_get_args(mrb, "o", &setting);
   config = mrb_gv_get(mrb, mrb_intern_cstr(mrb, GLOBAL_CONFIG_KEY));
   if (mrb_nil_p(config)) {
-    config = mrb_hash_new(mrb);  
+    config = mrb_hash_new(mrb);
   }
   config = mrb_funcall(mrb, config, "merge", 1, setting);
   mrb_gv_set(mrb, mrb_intern_cstr(mrb, GLOBAL_CONFIG_KEY), config);
@@ -110,7 +110,7 @@ static mrb_value mrb_config_sub_add(mrb_state *mrb, mrb_value self)
   mrb_hash_set(mrb, add_config, tag, setting);
   config = mrb_gv_get(mrb, mrb_intern_cstr(mrb, GLOBAL_SUB_CONFIG_KEY));
   if (mrb_nil_p(config)) {
-    config = mrb_hash_new(mrb);  
+    config = mrb_hash_new(mrb);
   }
   config = mrb_funcall(mrb, config, "merge", 1, add_config);
   mrb_gv_set(mrb, mrb_intern_cstr(mrb, GLOBAL_SUB_CONFIG_KEY), config);
@@ -124,7 +124,7 @@ static mrb_value mrb_config_sub_get(mrb_state *mrb, mrb_value self)
   mrb_value tag, key, config;
 
   config = mrb_gv_get(mrb, mrb_intern_cstr(mrb, GLOBAL_SUB_CONFIG_KEY));
-  argc = mrb_get_args(mrb, "o|oo", &tag, &key); 
+  argc = mrb_get_args(mrb, "o|oo", &tag, &key);
   if (argc == 1) {
     return mrb_hash_get(mrb, config, tag);
   } else if (argc == 2) {
@@ -140,12 +140,12 @@ static mrb_value mrb_config_sub_del(mrb_state *mrb, mrb_value self)
   mrb_value tag, key, config;
 
   config = mrb_gv_get(mrb, mrb_intern_cstr(mrb, GLOBAL_SUB_CONFIG_KEY));
-  argc = mrb_get_args(mrb, "o|oo", &tag, &key); 
+  argc = mrb_get_args(mrb, "o|oo", &tag, &key);
   if (argc == 1) {
     mrb_hash_delete_key(mrb, config, tag);
   } else if (argc == 2) {
     mrb_hash_delete_key(mrb, mrb_hash_get(mrb, config, tag), key);
-  } 
+  }
   mrb_gv_set(mrb, mrb_intern_cstr(mrb, GLOBAL_SUB_CONFIG_KEY), config);
 
   return config;
@@ -222,14 +222,9 @@ void mrb_get_config_value(mrb_state *mrb, char *key, const char *format, ...)
   case 'z':
     {
       char **z;
-      struct RString *s;
 
       z = va_arg(args, char**);
-      s = mrb_str_ptr(val);
-      if (strlen(s->as.heap.ptr) != s->as.heap.len) {
-        mrb_raise(mrb, E_ARGUMENT_ERROR, "String contains NUL");
-      }
-      *z = s->as.heap.ptr;
+      *z = mrb_string_value_cstr(mrb, &val);
     }
     break;
   }
