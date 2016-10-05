@@ -263,14 +263,9 @@ void mrb_get_sub_config_value(mrb_state *mrb, char *tag, char *key, const char *
   case 'z':
     {
       char **z;
-      struct RString *s;
 
       z = va_arg(args, char**);
-      s = mrb_str_ptr(val);
-      if (strlen(s->as.heap.ptr) != s->as.heap.len) {
-        mrb_raise(mrb, E_ARGUMENT_ERROR, "String contains NUL");
-      }
-      *z = s->as.heap.ptr;
+      *z = mrb_string_value_cstr(mrb, &val);
     }
     break;
   }
@@ -307,14 +302,9 @@ void mrb_config_convert_value(mrb_state *mrb, mrb_value val, const char *format,
   case 'z':
     {
       char **z;
-      struct RString *s;
 
       z = va_arg(args, char**);
-      s = mrb_str_ptr(val);
-      if (strlen(s->as.heap.ptr) != s->as.heap.len) {
-        mrb_raise(mrb, E_ARGUMENT_ERROR, "String contains NUL");
-      }
-      *z = s->as.heap.ptr;
+      *z = mrb_string_value_cstr(mrb, &val);
     }
     break;
   }
