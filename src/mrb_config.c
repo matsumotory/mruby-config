@@ -124,7 +124,7 @@ static mrb_value mrb_config_sub_get(mrb_state *mrb, mrb_value self)
   mrb_value tag, key, config;
 
   config = mrb_gv_get(mrb, mrb_intern_cstr(mrb, GLOBAL_SUB_CONFIG_KEY));
-  argc = mrb_get_args(mrb, "o|oo", &tag, &key);
+  argc = mrb_get_args(mrb, "|oo", &tag, &key);
   if (argc == 1) {
     return mrb_hash_get(mrb, config, tag);
   } else if (argc == 2) {
@@ -140,7 +140,7 @@ static mrb_value mrb_config_sub_del(mrb_state *mrb, mrb_value self)
   mrb_value tag, key, config;
 
   config = mrb_gv_get(mrb, mrb_intern_cstr(mrb, GLOBAL_SUB_CONFIG_KEY));
-  argc = mrb_get_args(mrb, "o|oo", &tag, &key);
+  argc = mrb_get_args(mrb, "|oo", &tag, &key);
   if (argc == 1) {
     mrb_hash_delete_key(mrb, config, tag);
   } else if (argc == 2) {
@@ -394,7 +394,7 @@ void mrb_mruby_config_gem_init(mrb_state *mrb)
 
   sub_config = mrb_define_class_under(mrb, config, "Sub", mrb->object_class);
   mrb_define_class_method(mrb, sub_config, "add", mrb_config_sub_add, MRB_ARGS_REQ(2));
-  mrb_define_class_method(mrb, sub_config, "del", mrb_config_sub_del, MRB_ARGS_REQ(2));
+  mrb_define_class_method(mrb, sub_config, "del", mrb_config_sub_del, MRB_ARGS_OPT(2));
   mrb_define_class_method(mrb, sub_config, "get", mrb_config_sub_get, MRB_ARGS_OPT(2));
   DONE;
 }
